@@ -7,6 +7,7 @@ namespace magicFactory
     {
         static void Main(string[] args)
         {
+            // test3 coomit branch "test" <----
             // test2 commit branch "test" <-------
             // testa commit.. <------
             Game newGame = new Game();    // onädigt? lägga i game? göra Start() static?        
