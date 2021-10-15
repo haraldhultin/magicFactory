@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace magicFactory
 {
-    public class Recipes // lägg i array av recipies. Egna klasser eller bara instanser?
+    public class Recipes 
     {
-        public static List<Recipes> _listOfAllRecipes = new List<Recipes>(); // statisk lista äver alla recept.
-                                                                             // Nya recept läggs till i listan viaRecipe-konstruktor
-     
+        public static List<Recipes> ListOfAllRecipes { get; private set; }         
+                                                                            
         public string Name { get; } 
         public int WoodNeeded { get; } // Wood needed to create this recipe
         public int IronNeeded { get; } // Iron needed to create this recipe
@@ -18,32 +17,33 @@ namespace magicFactory
         public int SumAllMaterialNeeded { get; } // WoodNeeded + IronNeeded + RubberNeeded. Används för att värdera villket färemål att tillverka.
                                                  // Göra till metod istället för fält? 
 
-        public Recipes(string name, int wood, int iron, int rubber) // Konstruktor
+        public Recipes(string name, int woodNeeded=0, int ironNeeded=0, int rubberNeeded = 0, bool AddToList = true) // Konstruktor
                                                                     // make more constructors?                                                                     
         {                                                            // Lägga till i lista direkt? --gjort
             Name = name;
-            WoodNeeded = wood;
-            IronNeeded = iron;
-            RubberNeeded = rubber;
-            SumAllMaterialNeeded = WoodNeeded + IronNeeded + RubberNeeded;
-            _listOfAllRecipes.Add(this);
-        }
-        public static void CreateRecipes() // populate _listOfAllRecipes at start of game
-        {
-            Recipes axe = new Recipes("axe", 2, 1, 0);
-            Recipes plunger = new Recipes("plunger", 1, 0, 1);
-            Recipes chopsticks = new Recipes("chopsticks", 1, 0, 0);
-            Recipes bikecycle = new Recipes("bikecycle", 0, 3, 1);
-        }
-        public static void ShowListOfRecipes() // needed? Remove?
-        {
-            Console.WriteLine($"{ "Name",-10} { "Wood",-5} {"Iron",-5} {"Rubber"}");
-            Console.WriteLine("----------------------------");
-            foreach (var item in _listOfAllRecipes)
+            WoodNeeded = woodNeeded;
+            IronNeeded = ironNeeded;
+            RubberNeeded = rubberNeeded;
+            SumAllMaterialNeeded = WoodNeeded + IronNeeded + RubberNeeded; // metod istället?
+
+            if (AddToList == true) // förhindra dubletter i ListOfAllRecipes <--- förbättra. Fler kontruktorer? flytta add to list?
             {
-                Console.WriteLine($"{ item.Name,-10} { item.WoodNeeded,-5} { item.IronNeeded,-5} {item.RubberNeeded}");
+                ListOfAllRecipes.Add(this); // lägg till recept i lista över alla recept
             }
         }
+        public static void CreateRecipes() // populate ListOfAllRecipes at start
+        {
+            ListOfAllRecipes = new List<Recipes>();
+            ListOfAllRecipes.AddRange(new List<Recipes>
+            {
+                new Recipes("axe", 1, 1, 0, false),
+                new Recipes("plunger", 1, 0, 1, false),
+                new Recipes("chopsticks", 1, 0, 0, false),
+                new Recipes("bikecycle", 0, 3, 1, false)
+             });
+        }
+
+
     }
 }
 
