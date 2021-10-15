@@ -6,9 +6,13 @@ namespace magicFactory
     class Program
     {
         static void Main(string[] args)
-        {
+        {  
+            // test2 commit branch "test" <------- 
+  
             // test commit new branch "test" < -----
+  
             // testa commit.. <------
+  
             Game newGame = new Game();    // onädigt? lägga i game? göra Start() static?        
             newGame.Start();         
             
