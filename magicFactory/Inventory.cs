@@ -77,8 +77,10 @@ namespace magicFactory
 
         public void ReturnMaterialFromFabricToInventory(int wood, int iron, int rubber)
         {
-            ShowInventory();
-            Console.WriteLine("banan");
+            // fixa inventorylist <----------
+
+            //ShowInventory();
+            //Console.WriteLine("banan");
             // int[] ParaArray = { wood, iron, rubber };
             //for (int n = 0; n < ParaArray.Length; n++)
             //{
