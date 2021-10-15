@@ -13,10 +13,10 @@ namespace magicFactory
         }
         public void Start()
         {
-            //Recipes recipes = new Recipes();
-            Inventory inventory = new Inventory();
-            Recipes.CreateRecipes(); // skapa receptlista
-            inventory.ChooseMaterialToSendToFactory();
+            Recipes.CreateRecipes(); // skapa receptlista            
+            Inventory inventory = new Inventory();            
+            inventory.ChooseWhatMaterialToSendToFactory();
+
         }
         
     }

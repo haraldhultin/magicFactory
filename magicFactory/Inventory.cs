@@ -5,137 +5,142 @@ namespace magicFactory
 {
     public class Inventory
     {
-        public static List<int> indexSelectedMaterial = new();
-        private static string _filler = "XXXX";
-        private  List<string> _inventoryList;
-        private  List<Recipes> _playerItems = new();
+        int woodInShipment = 0;
+        int ironInShipment = 0;
+        int rubberInShipment = 0;
+        public List<int> indexSelectedMaterial = new();
+        public static List<Recipes> PlayerItems { get; set; }
+        public static List<string> ListOfMaterialInInventory { get; set; }
 
-        public  List<Recipes> PlayerItems { get => _playerItems; set => _playerItems = value; }
-        public  List<string> InventoryList { get => _inventoryList; set => _inventoryList = value; }
-
-        private  readonly string[] MaterialArray = { "Wood", "Iron", "Rubber" }; // lägga i enum? Flytta ut?
-        private  readonly int _capacityStorage = 15;
-        static Random randomInventory = new Random();
+        private readonly int _capacityInventory = 15;
+        static Random random = new Random();
         public Inventory()
         {
-            InventoryList = new List<string>(); // Skapa lista inv
-            PlayerItems = new List<Recipes>(); // Skapa lista över tillverkade saker tillbaks från fabrik
-            CreateInventoryList();            // populate list of materal att välja från
+            ListOfMaterialInInventory = new List<string>(); // Skapa lista inv
+            PlayerItems = new List<Recipes>();              // Skapa lista över tillverkade saker tillbaks från fabrik
+            PopulateInventoryList();                        // populate list of materal att välja från
         }
 
-        public void CreateInventoryList() // Fyll lista över material
+        public void PopulateInventoryList()                 // Populate ListOfMaterialInInventory with random elements from EnumMaterial
         {
-            for (int i = 0; i < _capacityStorage; i++)
+            for (int i = 0; i < _capacityInventory; i++)
             {
-                InventoryList.Add(MaterialArray[randomInventory.Next(0, MaterialArray.Length)]);
+                int lengthOfEnum = Enum.GetNames(typeof(EnumMaterial)).Length; // Lenght of EnumMaterial
+                ListOfMaterialInInventory.Add(Convert.ToString((EnumMaterial)random.Next(0, lengthOfEnum))); // Populate ListOfMaterialInInventory with material at random index                      
             }
-
         }
 
         public void ShowInventory() // printa vad som finns i inventory
         {
-            int numPrint = 1; // för att kunna skriva i tre spalter men numrera vertikalt
-
-            for (int i = 1; i <= InventoryList.Count; i++)
+            int specialColumnIndex = 1; // för att kunna skriva i tre spalter men numrera vertikalt
+            for (int i = 1; i <= ListOfMaterialInInventory.Count; i++)
             {
                 if (i % 3 != 0)
                 {
-                    Console.Write($"{numPrint + " " + InventoryList[numPrint - 1],-15}");
-                    numPrint += 5;
+                    Console.Write($"{specialColumnIndex + " " + ListOfMaterialInInventory[specialColumnIndex - 1],-15}");
+                    specialColumnIndex += 5;
                 }
                 else
                 {
-                    Console.Write($"{numPrint + " " + InventoryList[numPrint - 1],-15}");
+                    Console.Write($"{specialColumnIndex + " " + ListOfMaterialInInventory[specialColumnIndex - 1],-15}");
                     Console.WriteLine();
-                    numPrint -= 9;
+                    specialColumnIndex -= 9;
                 }
             }
         }
-        public void ChooseMaterialToSendToFactory() // välja att skicka
+        public void ChooseWhatMaterialToSendToFactory() // välja att skicka
         {
-            int inputIndex;
-            int _wood = 0;
-            int _iron = 0;
-            int _rubber = 0;
-            while (_wood + _iron + _rubber < 5)
+            int maxAmountMaterialToShip = 5;
+            int inputIndex;            
+
+            while (woodInShipment + ironInShipment + rubberInShipment < maxAmountMaterialToShip)
             {
-                //myList.Clear();
                 ShowInventory();
-                Console.WriteLine($"{"Wood: " + _wood,-5} {"Iron: " + _iron,-5} {"Rubber " + _rubber}");
-                Console.WriteLine("Press number to add material to shipment...");
-                //inputIndex = Convert.ToInt32(Console.ReadKey(true).KeyChar.ToString()); // ej typsäkrat
+                Console.WriteLine($"{"Wood: " + woodInShipment,-5} {"Iron: " + ironInShipment,-5} {"Rubber " + rubberInShipment}"); // förbättra. loopa fram? array? 
+                Console.WriteLine("Enter number to add material to shipment...");
                 inputIndex = Convert.ToInt32(Console.ReadLine()); // ej typsäkrat
-
+                CountMaterialInShippment(inputIndex);
                 Console.Clear();
-
-                if (!indexSelectedMaterial.Contains(inputIndex - 1))
+                if (indexSelectedMaterial.Contains(inputIndex))
                 {
-                    switch (InventoryList[inputIndex - 1])
-                    {
-                        case "Wood":
-                            _wood += 1;
-                            break;
-                        case "Iron":
-                            _iron += 1;
-                            break;
-                        case "Rubber":
-                            _rubber += 1;
-                            break;
-                        default:
-                            break;
-                    }
+                    Console.WriteLine("Alredy chosen.");
                 }
                 else
                 {
-                    Console.WriteLine("Already selected");
+                    indexSelectedMaterial.Add(inputIndex - 1);
+                    ListOfMaterialInInventory[inputIndex - 1] = "";
                 }
-                InventoryList[inputIndex - 1] = "XXXX";
-                indexSelectedMaterial.Add(inputIndex - 1);
             }
             Factory factory = new Factory();
-            factory.MaterailFromUser(_wood, _iron, _rubber);
+            factory.MaterailFromUser(woodInShipment, ironInShipment, rubberInShipment);
         }
-        public void UpdateAndCleanUpInventory(int wood, int iron, int rubber)
+
+        public void ReturnMaterialFromFabricToInventory(int wood, int iron, int rubber)
         {
-            int[] ParaArray = { wood, iron, rubber };
-            for (int n = 0; n < ParaArray[n]; n++)
-            {
-                _inventoryList.Add(MaterialArray[n]);
-                Console.WriteLine("nu addas " + MaterialArray[n]);
-
-                //for (int i = 0; i < ;  i++)
-                //{
-                //    Console.WriteLine(MaterialArray[i].ToLower());
-                //    //_inventoryList.Add(MaterialArray[n]);
-                //}
-                Console.WriteLine("sista ele: " + _inventoryList[_inventoryList.Count - 1]);
-            }
-
-            int index = 0;
-            for (int i = 0; i < _capacityStorage; i++) // Add created item returned from factory to i_nventoryList
-            {
-                if (_inventoryList[i] == _filler)
-                {
-                    if (index <= _playerItems.Count - 1)
-                    {
-                        _inventoryList[i] = _playerItems[index].Name;
-                        index++;
-                        break;
-                    }
-                }
-
-            }
-            //for (int i = 0; i < _capacityStorage; i++) // To fill up emty spaces in inventory with new inventory
+            ShowInventory();
+            Console.WriteLine("banan");
+            // int[] ParaArray = { wood, iron, rubber };
+            //for (int n = 0; n < ParaArray.Length; n++)
             //{
-            //    if (_inventoryList[i] == _filler)
+            //    for (int i = 0; i < ParaArray[n]; i++)
             //    {
-            //        _inventoryList[i] = MaterialArray[randomInventory.Next(0, MaterialArray.Length)];
+            //        for (int k = 0; k < ListOfMaterialInInventory.Count; k++)
+            //        {
+            //            if (ListOfMaterialInInventory[k] == "")
+            //            {
+            //                ListOfMaterialInInventory[k]=Convert.ToString((EnumMaterial)n);
+            //                break;
+            //            }
+            //        }                        
+
             //    }
             //}
-            ShowInventory();
+
+
+            //int index = 0;
+            //for (int i = 0; i < _capacityStorage; i++) // Add created item returned from factory to i_nventoryList
+            //{
+
+            //    {
+            //        if (index <= _playerItems.Count - 1)
+            //        {
+            //            _inventoryList[i] = _playerItems[index].Name;
+            //            index++;
+            //            break;
+            //        }
+            //    }
+
+            //    }
+            //    //for (int i = 0; i < _capacityStorage; i++) // To fill up emty spaces in inventory with new inventory
+            //    //{
+            //    //    if (_inventoryList[i] == _filler)
+            //    //    {
+            //    //        _inventoryList[i] = MaterialArray[randomInventory.Next(0, MaterialArray.Length)];
+            //    //    }
+            //    //}
+            //    ShowInventory();
+            //}
+        }
+        private void CountMaterialInShippment(int inputIndex)
+        {
+            switch (ListOfMaterialInInventory[inputIndex - 1])
+            {
+                case "Wood":
+                    woodInShipment += 1;
+                    break;
+                case "Iron":
+                    ironInShipment += 1;
+                    break;
+                case "Rubber":
+                    rubberInShipment += 1;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
+
 
 
 
