@@ -5,15 +5,16 @@ namespace magicFactory
 {
     public class Inventory
     {
+        public static List<int> indexSelectedMaterial = new();
         private static string _filler = "XXXX";
-        private static List<string> _inventoryList;
-        private static List<Recipes> _playerItems = new();
+        private  List<string> _inventoryList;
+        private  List<Recipes> _playerItems = new();
 
-        public static List<Recipes> PlayerItems { get => _playerItems; set => _playerItems = value; }
-        public static List<string> InventoryList { get => _inventoryList; set => _inventoryList = value; }
+        public  List<Recipes> PlayerItems { get => _playerItems; set => _playerItems = value; }
+        public  List<string> InventoryList { get => _inventoryList; set => _inventoryList = value; }
 
-        private static readonly string[] MaterialArray = { "Wood", "Iron", "Rubber" }; // lägga i enum? Flytta ut?
-        private static readonly int _capacityStorage = 15;
+        private  readonly string[] MaterialArray = { "Wood", "Iron", "Rubber" }; // lägga i enum? Flytta ut?
+        private  readonly int _capacityStorage = 15;
         static Random randomInventory = new Random();
         public Inventory()
         {
@@ -31,7 +32,7 @@ namespace magicFactory
 
         }
 
-        public static void ShowInventory() // printa vad som finns i inventory
+        public void ShowInventory() // printa vad som finns i inventory
         {
             int numPrint = 1; // för att kunna skriva i tre spalter men numrera vertikalt
 
@@ -50,7 +51,51 @@ namespace magicFactory
                 }
             }
         }
-        public static void UpdateAndCleanUpInventory(int wood, int iron, int rubber)
+        public void ChooseMaterialToSendToFactory() // välja att skicka
+        {
+            int inputIndex;
+            int _wood = 0;
+            int _iron = 0;
+            int _rubber = 0;
+            while (_wood + _iron + _rubber < 5)
+            {
+                //myList.Clear();
+                ShowInventory();
+                Console.WriteLine($"{"Wood: " + _wood,-5} {"Iron: " + _iron,-5} {"Rubber " + _rubber}");
+                Console.WriteLine("Press number to add material to shipment...");
+                //inputIndex = Convert.ToInt32(Console.ReadKey(true).KeyChar.ToString()); // ej typsäkrat
+                inputIndex = Convert.ToInt32(Console.ReadLine()); // ej typsäkrat
+
+                Console.Clear();
+
+                if (!indexSelectedMaterial.Contains(inputIndex - 1))
+                {
+                    switch (InventoryList[inputIndex - 1])
+                    {
+                        case "Wood":
+                            _wood += 1;
+                            break;
+                        case "Iron":
+                            _iron += 1;
+                            break;
+                        case "Rubber":
+                            _rubber += 1;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Already selected");
+                }
+                InventoryList[inputIndex - 1] = "XXXX";
+                indexSelectedMaterial.Add(inputIndex - 1);
+            }
+            Factory factory = new Factory();
+            factory.MaterailFromUser(_wood, _iron, _rubber);
+        }
+        public void UpdateAndCleanUpInventory(int wood, int iron, int rubber)
         {
             int[] ParaArray = { wood, iron, rubber };
             for (int n = 0; n < ParaArray[n]; n++)
