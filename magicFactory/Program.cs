@@ -6,9 +6,18 @@ namespace magicFactory
     class Program
     {
         static void Main(string[] args)
+
         {
+            // commit to "test" branch
             // test3 coomit branch "test" <----
             // test2 commit branch "test" <-------
+
+          
+            // test2 commit branch "test" <------- 
+  
+            // test commit new branch "test" < -----
+  
+
             // testa commit.. <------
   
             Game newGame = new Game();    // onädigt? lägga i game? göra Start() static?        
