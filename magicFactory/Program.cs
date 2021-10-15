@@ -8,6 +8,7 @@ namespace magicFactory
         static void Main(string[] args)
 
         {
+            // commit to "test" branch
             // test3 coomit branch "test" <----
             // test2 commit branch "test" <-------
 
